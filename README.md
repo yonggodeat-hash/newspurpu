@@ -1,30 +1,18 @@
-# newspurpu 修改后模型与部署包
+# newspurpu — 修改后的 TimesFM-3
 
-本仓库保存已冻结的当前模型交付包，默认加载修改后的参数，每次输出三组不同的合法双色球完整组合。
+本仓库用于交付真正修改后的完整 TimesFM-3 模型及部署代码，默认输出三组不同的合法双色球完整组合。
 
-## 下载
+## 当前交付状态
 
-- [模型与部署包](newspurpu-v14-modified-top3.zip)
-- [SHA-256 校验值](SHA256SUMS)
+完整模型正在从用户的 Kaggle 私有保存版本取回，随后合入已有 V9 权重修改并核验全部 445 个状态张量。当前尚未完成完整模型上传。
 
-ZIP 包含当前假设二有限贝叶斯概率混合模型的完整推理参数（`checkpoint/edited.npz` 和必需概率基底）、Python 源码、CLI、HTTP/WSGI 接口、Dockerfile、依赖声明和说明。
+先前误传的 5,000 参数小型概率模型 ZIP 已从 main 撤下，不应作为本项目的 TimesFM 部署包。旧 SHA256SUMS 对应已撤下的错误包，不能用于完整 TimesFM。
 
-当前模型为 5,000 参数的小型概率模型，其中 2,790 项已直接改写。CPU 即可运行。模型身份和检查点记录见包内 `model.json`；本交付包对应该小型模型。
+## 模型身份
 
-## 启动
+- 原生 TimesFM-3 核心：330,710,976 个参数、445 个状态张量。
+- 基于项目 V4 真实训练版本，核心 SHA-256：`62ff849d53e26da3660f0c3b49afaee21207d426d209d8c4fa00f2e69b8abd1d`。
+- 已有 V9 修改：`quantile_width_09`，原生输出层 10,248 项参数。
+- 保留既有 40,951 参数的双色球概率头，三组解码使用该头的合法条件概率。
 
-```bash
-unzip newspurpu-v14-modified-top3.zip
-cd newspurpu-v14-modified-top3
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python verify_release.py
-python -m deploy.cli --input deploy/synthetic_history.json
-```
-
-示例文件为合成历史，仅用于工程检查。真实推理需要按时间先后提供至少 128 期已公布的双色球开奖，每行六红一蓝。详细输入与部署说明见包内 README。
-
-本地解压加载及接口工程检查已通过；尚未证实真实彩票预测优势。模型概率不是实测中奖率。探索已按用户要求停止，当前仓库用于交付与部署。
-
-ZIP SHA-256：`0602b936c94d1b1e0ee91862b13acb74948c7a25a79a29a40488b6c97189aef0`。
+完整包应包含实际的 `model/model.safetensors`、概率头、配置、固定上游源码、来源和许可证、部署代码及合并核验记录。当前没有继续训练或探索预测策略。
